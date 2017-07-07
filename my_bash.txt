@@ -1,0 +1,43 @@
+source ~/.profile
+
+__git_ps1 ()
+{
+    local b="$(git symbolic-ref HEAD 2>/dev/null)";
+    if [ -n "$b" ]; then
+        printf " (%s)" "${b##refs/heads/}";
+    fi
+}
+
+parse_git_dirty ()
+{
+  GSTATUS=$(git status 2> /dev/null | tail -n1)
+
+  if [ "$GSTATUS" != "nothing to commit, working tree clean" ] && [ "$GSTATUS" != "" ]; then
+  	echo "*"
+  fi
+
+}
+
+RVM="$(~/.rvm/bin/rvm-prompt)"
+
+PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[0;36m\]\w\[\033[0;33m\] $RVM\e[0m\e[38;5;202m$(__git_ps1) \[\e[31m\]$(parse_git_dirty)\[\e[m\] 🍺  '
+export GREP_OPTIONS="--color"
+
+
+# Add Bash Completion
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+
+alias sublime="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+alias ls="ls -G"
+alias ll="ls -lah"
+alias gst="git status"
+alias gco="git checkout"
+alias lbash=". ~/.bash_profile"
+alias ebash="sublime ~/.bash_profile"
+alias vpn='~/sshuttle/./run -vr weslley.almeida@sabara.moip.com.br:31759 10.0.215.0/24 10.0.133.0/24 10.0.114.0/24 10.1.195.0/24 10.1.196.0/24 10.5.1.229 54.236.120.57 54.236.226.214 209.134.57.230 209.134.57.231 209.134.57.220 208.82.206.29'
+alias tunel_sshuttle="~/sshuttle/./run --dns -r prod 10.0.0.0/8 54.208.81.254/32 54.236.226.214/32 54.208.15.127/32 54.208.87.82/32 54.173.182.23/32 54.208.104.149/32 54.209.23.155/32 54.208.38.243/32 54.85.93.46/32"
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
