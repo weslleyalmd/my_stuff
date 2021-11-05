@@ -1,0 +1,136 @@
+# if [ $ITERM_SESSION_ID ]; then
+#   export PROMPT_COMMAND='echo -ne "\033];${PWD##*/}\007"; ':"$PROMPT_COMMAND";
+# fi
+
+export PROMPT_COMMAND='echo -ne "\033];${PWD##*/}\007"'
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export ANDROID_HOME=/usr/local/share/android-sdk
+export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$PATH
+
+function prompt_rvm {
+    rbv=`rvm-prompt`
+    rbv=${rbv#ruby-}
+    [[ $rbv == *"@"* ]] || rbv="${rbv}@default"
+    echo $rbv
+}
+
+function prompt {
+    local BLACK="\[\033[0;30m\]"
+    local BLACKBOLD="\[\033[1;30m\]"
+    local RED="\[\033[0;31m\]"
+    local REDBOLD="\[\033[1;31m\]"
+    local GREEN="\[\033[0;32m\]"
+    local GREENBOLD="\[\033[1;32m\]"
+    local YELLOW="\[\033[0;33m\]"
+    local YELLOWBOLD="\[\033[1;33m\]"
+    local BLUE="\[\033[0;34m\]"
+    local BLUEBOLD="\[\033[1;34m\]"
+    local PURPLE="\[\033[0;35m\]"
+    local PURPLEBOLD="\[\033[1;35m\]"
+    local CYAN="\[\033[0;36m\]"
+    local CYANBOLD="\[\033[1;36m\]"
+    local WHITE="\[\033[0;37m\]"
+    local WHITEBOLD="\[\033[1;37m\]"
+    local RESETCOLOR="\[\e[00m\]"
+
+    export PS1="🍺 $WHITEBOLD\u$YELLOW @ $CYANBOLD\w $RESETCOLOR$PURPLE\[\$(prompt_rvm)$RED\$(__git_ps1) \$(parse_git_dirty) $RESETCOLOR\]\n >>>> "
+    export PS2=" | → $RESETCOLOR"
+}
+
+prompt
+
+alias sublime="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+
+alias ls="ls -G"
+alias ll="ls -lah"
+alias gst="git status"
+alias gco="git checkout"
+alias gpush="git push origin"
+alias gpull="git pull origin"
+alias gcmit="git commit -m"
+alias gfetchpull="git fetch && git pull"
+alias lbash="source ~/.bash_profile"
+alias ebash="sublime ~/.bash_profile"
+alias branches="git branch"
+alias ngrok="/Applications/ngrok"
+
+__git_ps1 ()
+{
+    local b="$(git symbolic-ref HEAD 2>/dev/null)";
+    if [ -n "$b" ]; then
+        printf " (%s)" "${b##refs/heads/}";
+    fi
+}
+
+parse_git_dirty ()
+{
+  GSTATUS=$(git status 2> /dev/null | tail -n1)
+
+  if [ "$GSTATUS" != "nothing to commit, working tree clean" ] && [ "$GSTATUS" != "" ]; then
+  	echo "*"
+  fi
+
+}
+
+
+alias rubocop.check="bin/rake \"lint:rubocop[develop]\""
+alias rubocop.fix="bin/rake \"lint:rubocop:auto_correct[develop]\""
+
+alias cd.james.jaime="cd ~/projetos/james.microservice.jaime"
+
+alias generate.graphql.schema.json="rake graphql:schema:json"
+alias cd.james.api="cd ~/projetos/james.api"
+alias edit.james.api="sublime ~/projetos/james.api"
+alias run.james.api="bundle exec rails s"
+alias run.james.api.docker="docker-compose up"
+alias build.james.api.docker="docker-compose build"
+alias stop.james.api.docker="docker-compose down"
+alias access.james.api.docker="docker-compose run --rm app"
+
+alias cd.james.store="cd ~/projetos/james.store"
+alias edit.james.store="sublime ~/projetos/james.store"
+alias run.james.store.local="npm run start -- --configuration=local"
+
+alias cd.james.maestros="cd ~/projetos/james.maestros"
+alias edit.james.maestros="sublime ~/projetos/james.maestros"
+alias run.james.maestros.local="npm run start -- --env=local"
+
+alias cd.james.admin="cd ~/projetos/james.admin"
+alias edit.james.admin="sublime ~/projetos/james.admin"
+alias run.james.admin.local="npm run start -- --env=local"
+
+alias cd.james.android.client="cd ~/projetos/android/james.client.android"
+alias edit.james.android.client="sublime ~/projetos/android/james.client.android"
+alias install.james.android.client="adb -s emulator-5554 install -t -r  app/build/outputs/apk/jamesClient/local/app-jamesClient-local.apk"
+alias run.james.android.client.device="emulator @james-client"
+
+alias cd.james.android.courier="cd ~/projetos/android/james.courier.android.v2"
+alias edit.james.android.courier="sublime ~/projetos/android/james.courier.android.v2"
+alias install.james.android.courier="adb -s emulator-5554 install -t -r app/build/outputs/apk/local/james-courier-vnull-local.apk"
+alias run.james.android.courier.device="emulator @james-courier1"
+
+alias cd.james.android.shopper="cd ~/projetos/android/james.shopper.android"
+alias edit.james.android.shopper="sublime ~/projetos/android/james.shopper.android"
+alias install.james.android.shopper="adb -s emulator-5554 install -t -r app/build/outputs/apk/local/app-local.apk"
+alias run.james.android.shopper.device="emulator @james-shopper"
+
+# alias stage.access="ssh ubuntu@172.31.22.68 -i stage.pem"
+alias stage.access="ssh ubuntu@172.16.2.221 -i stage.pem"
+alias stage.change.branch="sublime ~/projetos/james.api/config/deploy/staging-ops.rb"
+alias stage.deploy="mina staging-ops deploy"
+alias stage.puma.stop="mina staging-ops puma:stop"
+alias stage.puma.start="mina staging-ops puma:start"
+
+alias build.james.android.apk="./gradlew assembleLocal"
+
+# meu token em prod
+# eyJhbGciOiJIUzI1NiJ9.eyJrZXkiOiIyMDIwLTExLTE5IDEzOjA0OjIzIFVUQzM2NzY5ODQiLCJleHAiOjE2MDU4MzQyNjN9.VXR77jiDWpd-EvDbZg56CWoOJUdrGeVzH0ovHCZaRIU
+
+# Comando para criar alias apontando para o localhost
+# sudo ifconfig lo0 alias 10.0.2.2
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
